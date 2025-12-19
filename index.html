@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tool Directory</title>
+    <title>I use these tools and services!</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
-        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+        body { font-family: 'Inter', sans-serif; background-color: #1e293b; }
         .tool-card { transition: all 0.3s ease; }
         .tool-card:hover { transform: translateY(-5px); }
     </style>
@@ -16,15 +16,13 @@
 <body class="p-6 md:p-12">
 
     <div class="max-w-5xl mx-auto">
-        <!-- Header -->
         <header class="text-center mb-12">
             <h1 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-4">
                 I use these tools and services!
             </h1>
-            <p class="text-slate-600 text-lg">A curated collection of resources and platforms I trust.</p>
+            <p class="text-slate-600 text-lg">A collection of tools and platforms I trust.</p>
         </header>
 
-        <!-- Search Bar -->
         <div class="relative max-w-xl mx-auto mb-12">
             <span class="absolute inset-y-0 left-0 flex items-center pl-4">
                 <i class="fa-solid fa-magnifying-glass text-slate-400"></i>
@@ -37,27 +35,26 @@
             >
         </div>
 
-        <!-- Tool Grid -->
         <div id="toolGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <!-- Items will be injected here by JavaScript -->
             <div id="loading" class="col-span-full text-center py-10 text-slate-500">
                 <i class="fa-solid fa-spinner fa-spin text-3xl mb-2"></i>
                 <p>Loading tools...</p>
             </div>
         </div>
 
-        <!-- No Results -->
         <div id="noResults" class="hidden text-center py-20">
             <i class="fa-solid fa-face-frown text-5xl text-slate-300 mb-4"></i>
             <h3 class="text-xl font-semibold text-slate-900">No tools found</h3>
             <p class="text-slate-500">Try searching for something else.</p>
         </div>
     </div>
+    <header class="text-center mb-12">
+        <a href="https://tiwut.de/cookie-banner-information.html" style="color: #a0a0a0; text-decoration: none; font-size: 0.8rem;">Legal Notice</a>
+    </header>
 
     <script>
         let tools = [];
 
-        // Function to extract a clean name from a URL
         function getDomainName(url) {
             try {
                 let domain = new URL(url).hostname;
@@ -68,14 +65,12 @@
             }
         }
 
-        // Fetch the xam.txt file
         async function loadTools() {
             try {
                 const response = await fetch('xam.txt');
                 if (!response.ok) throw new Error('Could not find xam.txt');
                 
                 const text = await response.text();
-                // Split by newline and remove empty lines
                 const urls = text.split(/\r?\n/).filter(line => line.trim() !== '');
                 
                 tools = urls.map(url => ({
@@ -124,7 +119,6 @@
             }
         }
 
-        // Search logic
         document.getElementById('searchInput').addEventListener('input', (e) => {
             const searchTerm = e.target.value.toLowerCase();
             const filtered = tools.filter(t => 
@@ -134,8 +128,10 @@
             renderTools(filtered);
         });
 
-        // Initialize
         loadTools();
     </script>
+    <script data-goatcounter="https://tiwut.goatcounter.com/count"async src="//gc.zgo.at/count.js"></script>
+    <script src="https://tiwut.de/cookie.notice.js"></script>
+    <script src="https://tiwut.de/Script/enforce_https.js" defer></script>
 </body>
 </html>
