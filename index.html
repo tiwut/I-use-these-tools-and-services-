@@ -1,47 +1,141 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
-    <script src="https://tiwut.de/Script/enforce_https.js" defer></script>
-    
-    <script src="https://tiwut.de/Script/warnings.js" defer></script>
-    <link rel="stylesheet" href="https://tiwut.de/Style/warnings.css">
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-    <title>I use these tools and services!</title>
-    <link rel="stylesheet" href="style_tools.css">
-
+    <title>Tool Directory</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+        .tool-card { transition: all 0.3s ease; }
+        .tool-card:hover { transform: translateY(-5px); }
+    </style>
 </head>
-<body>
-    <div class="container">
-        <header>
-            <div class="header-controls">
-                <select id="lang-switcher"></select>
-                <a href="https://tiwut.de" id="main-page-link" class="button-link" rel="noopener noreferrer" data-translate-key="mainPageButton">Main Page</a>
-            </div>
-            
-            <h1 data-translate-key="headerH1">I use these tools and services!</h1>
-            <p data-translate-key="headerP">Search for your tools and services quickly and efficiently.</p>
+<body class="p-6 md:p-12">
+
+    <div class="max-w-5xl mx-auto">
+        <!-- Header -->
+        <header class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-4">
+                I use these tools and services!
+            </h1>
+            <p class="text-slate-600 text-lg">A curated collection of resources and platforms I trust.</p>
         </header>
 
-        <main>
-            <div class="search-container">
-                <input type="search" id="searchInput" data-translate-placeholder-key="searchInputPlaceholder" placeholder="Search for tools (e.g., calculator, Image Converter)...">
-            </div>
-            <div id="results" class="results-container">
-                
-            </div>
-        </main>
+        <!-- Search Bar -->
+        <div class="relative max-w-xl mx-auto mb-12">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-4">
+                <i class="fa-solid fa-magnifying-glass text-slate-400"></i>
+            </span>
+            <input 
+                type="text" 
+                id="searchInput" 
+                placeholder="Search tools or services..." 
+                class="w-full pl-12 pr-4 py-4 rounded-2xl border border-slate-200 focus:ring-4 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all shadow-sm text-lg"
+            >
+        </div>
 
-        <footer>
-            <p data-translate-key="footerText">&copy; 2025 Tiwut. All tools at your fingertips.</p>
-            <a href="https://tiwut.de/cookie-banner-information.html">Legal Notice</a>
-        </footer>
+        <!-- Tool Grid -->
+        <div id="toolGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Items will be injected here by JavaScript -->
+            <div id="loading" class="col-span-full text-center py-10 text-slate-500">
+                <i class="fa-solid fa-spinner fa-spin text-3xl mb-2"></i>
+                <p>Loading tools...</p>
+            </div>
+        </div>
+
+        <!-- No Results -->
+        <div id="noResults" class="hidden text-center py-20">
+            <i class="fa-solid fa-face-frown text-5xl text-slate-300 mb-4"></i>
+            <h3 class="text-xl font-semibold text-slate-900">No tools found</h3>
+            <p class="text-slate-500">Try searching for something else.</p>
+        </div>
     </div>
 
-    <script src="script_tools.js" defer></script>
-    <script src="https://tiwut.de/cookie.notice.js"></script>
+    <script>
+        let tools = [];
+
+        // Function to extract a clean name from a URL
+        function getDomainName(url) {
+            try {
+                let domain = new URL(url).hostname;
+                domain = domain.replace('www.', '');
+                return domain.charAt(0).toUpperCase() + domain.slice(1);
+            } catch (e) {
+                return url;
+            }
+        }
+
+        // Fetch the xam.txt file
+        async function loadTools() {
+            try {
+                const response = await fetch('xam.txt');
+                if (!response.ok) throw new Error('Could not find xam.txt');
+                
+                const text = await response.text();
+                // Split by newline and remove empty lines
+                const urls = text.split(/\r?\n/).filter(line => line.trim() !== '');
+                
+                tools = urls.map(url => ({
+                    originalUrl: url.startsWith('http') ? url : `https://${url}`,
+                    displayName: getDomainName(url.startsWith('http') ? url : `https://${url}`)
+                }));
+
+                renderTools(tools);
+            } catch (error) {
+                document.getElementById('loading').innerHTML = `
+                    <p class="text-red-500 font-medium">Error: Please ensure "xam.txt" exists in the same folder.</p>
+                `;
+                console.error(error);
+            }
+        }
+
+        function renderTools(list) {
+            const grid = document.getElementById('toolGrid');
+            const noResults = document.getElementById('noResults');
+            const loading = document.getElementById('loading');
+            
+            if (loading) loading.remove();
+            grid.innerHTML = '';
+
+            if (list.length === 0) {
+                noResults.classList.remove('hidden');
+            } else {
+                noResults.classList.add('hidden');
+                list.forEach(tool => {
+                    const card = document.createElement('a');
+                    card.href = tool.originalUrl;
+                    card.target = "_blank";
+                    card.className = "tool-card bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-center space-x-4 hover:shadow-xl hover:border-blue-200 cursor-pointer";
+                    
+                    card.innerHTML = `
+                        <div class="bg-blue-50 p-3 rounded-xl text-blue-600">
+                            <i class="fa-solid fa-link text-xl"></i>
+                        </div>
+                        <div class="overflow-hidden">
+                            <h3 class="font-bold text-slate-800 truncate">${tool.displayName}</h3>
+                            <p class="text-xs text-slate-400 truncate">${tool.originalUrl}</p>
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                });
+            }
+        }
+
+        // Search logic
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            const filtered = tools.filter(t => 
+                t.displayName.toLowerCase().includes(searchTerm) || 
+                t.originalUrl.toLowerCase().includes(searchTerm)
+            );
+            renderTools(filtered);
+        });
+
+        // Initialize
+        loadTools();
+    </script>
 </body>
 </html>
