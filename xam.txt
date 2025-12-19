@@ -1,3 +1,4 @@
+https://partner.microsoft.com/
 https://www.freehostia.com/
 https://railway.com/
 https://www.hostinger.com/special/000webhost
@@ -5,3 +6,13 @@ https://www.awardspace.com/
 https://render.com/
 https://ngrok.com/
 https://www.infinityfree.com/
+https://www.strato.de/
+https://aistudio.google.com/
+https://github.com/
+https://git-scm.com/
+https://gitlab.com/
+https://bitbucket.org/
+https://firebase.google.com/
+https://colab.google/
+https://www.unrealengine.com/
+https://www.goatcounter.com/
